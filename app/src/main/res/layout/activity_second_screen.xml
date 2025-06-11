@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <View
+        android:id="@+id/topFaturaBackground"
+        android:layout_width="419dp"
+        android:layout_height="99dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="#FFFFFF"
+        android:elevation="2dp"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/topFaturaTextViewSecondScreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fatura_text"
+        android:textColor="#000000"
+        android:textSize="30sp"
+        android:elevation="3dp"
+        app:layout_constraintStart_toStartOf="@id/topFaturaBackground"
+        app:layout_constraintEnd_toEndOf="@id/topFaturaBackground"
+        app:layout_constraintTop_toTopOf="@id/topFaturaBackground"
+        app:layout_constraintBottom_toBottomOf="@id/topFaturaBackground" />
+
+    <TextView
+        android:id="@+id/saveTextViewSecondScreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:elevation="3dp"
+        android:text="@string/guardar_text"
+        android:textColor="#191970"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/backButtonSecondScreen"
+        android:layout_width="23dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?attr/actionBarItemBackground"
+        android:contentDescription="@string/back_button_description"
+        android:elevation="3dp"
+        android:rotation="90"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_cifrao_azul_escuro"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingBottom="0dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@+id/topFaturaBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <View
+                android:id="@+id/grayBarView"
+                android:layout_width="0dp"
+                android:layout_height="91dp"
+                android:layout_marginTop="8dp"
+                android:background="#FBFBFB"
+                android:elevation="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/shadowView"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:background="@drawable/shadow_bottom"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/grayBarView" />
+
+            <!-- Primeiro ponto azul -->
+            <View
+                android:id="@+id/dot1"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/circle_blue"
+                android:elevation="5dp"
+                app:layout_constraintBottom_toBottomOf="@id/grayBarView"
+                app:layout_constraintEnd_toStartOf="@id/dot2"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="@id/grayBarView"
+                app:layout_constraintTop_toTopOf="@id/grayBarView"
+                app:layout_constraintVertical_bias="0.903" />
+
+            <!-- Segundo ponto azul -->
+            <View
+                android:id="@+id/dot2"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/circle_blue"
+                android:elevation="5dp"
+                app:layout_constraintBottom_toBottomOf="@id/grayBarView"
+                app:layout_constraintEnd_toStartOf="@id/dot3"
+                app:layout_constraintStart_toEndOf="@id/dot1"
+                app:layout_constraintTop_toTopOf="@id/grayBarView"
+                app:layout_constraintVertical_bias="0.903" />
+
+            <!-- Terceiro ponto azul -->
+            <View
+                android:id="@+id/dot3"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/circle_blue"
+                android:elevation="5dp"
+                app:layout_constraintBottom_toBottomOf="@id/grayBarView"
+                app:layout_constraintEnd_toEndOf="@id/grayBarView"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@id/dot2"
+                app:layout_constraintTop_toTopOf="@id/grayBarView"
+                app:layout_constraintVertical_bias="0.903" />
+
+            <TextView
+                android:id="@+id/dateTextViewSecondScreen"
+                android:layout_width="141dp"
+                android:layout_height="43dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="11 Abr 2025"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:visibility="visible"
+                android:elevation="5dp"
+                app:layout_constraintStart_toStartOf="@+id/grayBarView"
+                app:layout_constraintTop_toTopOf="@+id/grayBarView" />
+
+            <TextView
+                android:id="@+id/invoiceNumberTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="16dp"
+                android:text="#1"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:elevation="5dp"
+                app:layout_constraintEnd_toEndOf="@+id/grayBarView"
+                app:layout_constraintTop_toTopOf="@+id/grayBarView" />
+
+            <TextView
+                android:id="@+id/topParaTextViewSecondScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/para_text"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/shadowView" />
+
+            <TextView
+                android:id="@+id/topAdicionarClienteTextViewSecondScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/adicionar_cliente_text"
+                android:textColor="#191970"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/topParaTextViewSecondScreen" />
+
+            <ImageView
+                android:id="@+id/myImageViewSecondScreen"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="16dp"
+                android:background="@null"
+                android:scaleType="fitCenter"
+                android:src="@drawable/add"
+                app:layout_constraintEnd_toStartOf="@+id/topAdicionarClienteTextViewSecondScreen"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/topAdicionarClienteTextViewSecondScreen"
+                app:layout_constraintBottom_toBottomOf="@+id/topAdicionarClienteTextViewSecondScreen" />
+
+            <View
+                android:id="@+id/lightGrayLineView"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="#D3D3D3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/topAdicionarClienteTextViewSecondScreen" />
+
+            <TextView
+                android:id="@+id/qtdTextViewSecondScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:text="Qtd"
+                android:textColor="#191970"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/adicionarArtigoContainerSecondScreen"
+                app:layout_constraintBottom_toBottomOf="@+id/adicionarArtigoContainerSecondScreen" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/adicionarArtigoContainerSecondScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lightGrayLineView">
+
+                <ImageView
+                    android:id="@+id/adicionarArtigoIconSecondScreen"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@null"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/add"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/adicionarArtigoTextViewSecondScreen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Adicionar Artigo"
+                    android:textColor="#191970"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toEndOf="@+id/adicionarArtigoIconSecondScreen"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/itemsTextViewSecondScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="280dp"
+                android:text="Itens"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@+id/qtdTextViewSecondScreen"
+                app:layout_constraintTop_toBottomOf="@+id/adicionarArtigoContainerSecondScreen" />
+
+            <TextView
+                android:id="@+id/organizarItensTextViewSecondScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="64dp"
+                android:layout_marginTop="16dp"
+                android:text="Toque e segure para excluir"
+                android:textColor="#D3D3D3"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/itemsTextViewSecondScreen" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/artigosRecyclerViewSecondScreen"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/organizarItensTextViewSecondScreen" />
+
+            <View
+                android:id="@+id/novaLinhaViewSecondScreen"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="#D3D3D3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/artigosRecyclerViewSecondScreen" />
+
+            <ImageButton
+                android:id="@+id/gerImageButtonSecondScreen"
+                android:layout_width="32dp"
+                android:layout_height="37dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="?attr/actionBarItemBackground"
+                android:contentDescription="@string/abrir_terceira_tela"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ger"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/novaLinhaViewSecondScreen" />
+
+            <TextView
+                android:id="@+id/totalTextViewSecondScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="Total"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/gerImageButtonSecondScreen"
+                app:layout_constraintBottom_toBottomOf="@+id/gerImageButtonSecondScreen" />
+
+            <TextView
+                android:id="@+id/subtotalTextViewSecondScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:text="Subtotal"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/totalTextViewSecondScreen" />
+
+            <TextView
+                android:id="@+id/subtotalValueTextViewSecondScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="(R$ 0,00)"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/subtotalTextViewSecondScreen"
+                app:layout_constraintBottom_toBottomOf="@+id/subtotalTextViewSecondScreen" />
+
+            <TextView
+                android:id="@+id/descontoTextViewSecondScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:text="Desconto:"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/subtotalTextViewSecondScreen" />
+
+            <TextView
+                android:id="@+id/descontoValueTextViewSecondScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="0% (R$ 0,00)"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/descontoTextViewSecondScreen"
+                app:layout_constraintBottom_toBottomOf="@+id/descontoTextViewSecondScreen" />
+
+            <TextView
+                android:id="@+id/taxaEntregaTextViewSecondScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:text="Taxa de Entrega:"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/descontoTextViewSecondScreen" />
+
+            <TextView
+                android:id="@+id/taxaEntregaValueTextViewSecondScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="R$ 0,00"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/taxaEntregaTextViewSecondScreen"
+                app:layout_constraintBottom_toBottomOf="@+id/taxaEntregaTextViewSecondScreen" />
+
+            <View
+                android:id="@+id/lightGrayBar"
+                android:layout_width="0dp"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_marginTop="16dp"
+                android:background="#D3D3D3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/taxaEntregaTextViewSecondScreen" />
+
+            <TextView
+                android:id="@+id/saldoDevedorTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="8dp"
+                android:text="Saldo Devedor"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/lightGrayBar" />
+
+            <TextView
+                android:id="@+id/saldoDevedorValueTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:text="R$ 0,00"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/lightGrayBar" />
+
+            <TextView
+                android:id="@+id/notasTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:text="Notas"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lightGrayBar" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/notasRecyclerView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/notasTextView" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/adicionarNotaContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/notasRecyclerView">
+
+                <ImageView
+                    android:id="@+id/adicionarNotaIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@null"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/add"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/adicionarNotaTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Adicionar Nota"
+                    android:textColor="#0000FF"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toEndOf="@+id/adicionarNotaIcon"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/grayLineBelowNotas"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="#D3D3D3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/adicionarNotaContainer" />
+
+            <TextView
+                android:id="@+id/fotosTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:text="Fotos"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/grayLineBelowNotas" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/adicionarFotoContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fotosTextView">
+
+                <ImageView
+                    android:id="@+id/adicionarFotoIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@null"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/add"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/adicionarFotoTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Adicionar Foto"
+                    android:textColor="#0000FF"
+                    android:textSize="16sp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:layout_constraintStart_toEndOf="@+id/adicionarFotoIcon"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Caixa branca com sombra e ícones (whiteBox) -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/whiteBox"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="48dp"
+                android:background="@drawable/rounded_white_box"
+                android:elevation="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/adicionarFotoContainer"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <!-- Ícone de visualizar -->
+
+                <!-- Ícone de enviar -->
+
+                <ImageView
+                    android:id="@+id/viewIcon"
+                    android:layout_width="141dp"
+                    android:layout_height="71dp"
+                    android:layout_marginStart="40dp"
+                    android:contentDescription="pdf"
+                    android:src="@drawable/pdf"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.545" />
+
+                <ImageView
+                    android:id="@+id/sendIcon"
+                    android:layout_width="106dp"
+                    android:layout_height="73dp"
+                    android:layout_marginStart="40dp"
+                    android:contentDescription="Enviar"
+                    android:src="@drawable/enviar"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/viewIcon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

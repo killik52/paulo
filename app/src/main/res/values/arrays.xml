@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="desconto_types">
+        <item>R$</item>
+        <item>%</item>
+    </string-array>
+
+    <string-array name="menu_options">
+        <item>Fatura</item>
+        <item>Cliente</item>
+        <item>Artigo</item>
+        <item>Lixeira</item>
+    </string-array>
+</resources>

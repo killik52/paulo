@@ -1,0 +1,68 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:background="@drawable/card_shadow_background"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:elevation="2dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/faturaNumero"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:text="Fatura #0000" />
+
+        <TextView
+            android:id="@+id/faturaCliente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#666666"
+            android:text="Cliente: Nome do Cliente"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/faturaData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#666666"
+            android:text="Data: 01 Jan 2025"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/faturaStatusEnviado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Enviado"
+            android:textColor="@color/status_enviado_texto_bebe"
+            android:background="@drawable/background_status_enviado"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/faturaValor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:gravity="end"
+        android:text="R$ 0,00" />
+
+</LinearLayout>

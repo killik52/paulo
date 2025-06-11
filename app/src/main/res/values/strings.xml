@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">BookV6</string> <string name="add_button_description">Adicionar</string>
+    <string name="fatura_text">Fatura</string>
+    <string name="guardar_text">Guardar</string>
+    <string name="back_button_description">Voltar</string>
+    <string name="para_text">Para</string>
+    <string name="adicionar_cliente_text">Adicionar Cliente</string>
+    <string name="abrir_terceira_tela">Abrir terceira tela</string>
+    <string name="galeria_fotos">Galeria de Fotos</string>
+    <string name="adicionar_foto">Adicionar Foto</string>
+    <string name="photo_description">Foto</string>
+    <string name="payment_instructions_title">Instruções de Pagamento</string>
+    <string name="search_dialog_title">Pesquisar Faturas</string>
+    <string name="search_dialog_hint">Digite nome, CPF, CNPJ, telefone, nº fatura ou nº série</string>
+    <string name="search_dialog_positive_button">Pesquisar</string>
+    <string name="search_dialog_negative_button">Cancelar</string>
+    <string name="search_empty_query_message">Por favor, insira um termo de busca.</string>
+    <string name="database_error_message">Erro: Banco de dados não acessível.</string>
+    <string name="fatura_itens_table_missing_message">Erro: Tabela de itens de fatura não encontrada. Por favor, reinstale o aplicativo.</string>
+    <string name="search_error_message">Erro ao buscar faturas: %1$s</string>
+    <string name="search_null_cursor_message">Erro ao buscar faturas.</string>
+    <string name="search_success_log_message">Busca concluída com query \'%1$s\', encontradas %2$d faturas</string>
+    <string name="search_result_log_message">Fatura encontrada: #%1$s, Cliente: %2$s</string>
+    <string name="pick_from_gallery_description">Escolher da Galeria</string>
+    <string name="title_activity_resumo_financeiro">Resumo Financeiro</string>
+    <string name="title_activity_detalhes_faturas_mes">Detalhes do Mês</string>
+    <string name="filtro_ultimo_ano">Último Ano</string>
+    <string name="filtro_customizado">Customizado</string>
+    <string name="data_inicio">Data Início</string>
+    <string name="data_fim">Data Fim</string>
+    <string name="aplicar_filtro">Aplicar Filtro</string>
+    <string name="faturamento_mensal">Faturamento Mensal</string>
+    <string name="resumo_por_cliente">Por Cliente</string>
+    <string name="resumo_por_artigo">Por Artigo</string>
+    <string name="total_faturado">Total Faturado:</string>
+    <string name="total_gasto">Total Gasto:</string>
+    <string name="total_vendido">Total Vendido (Valor):</string>
+    <string name="quantidade_vendida">Quantidade Vendida:</string>
+    <string name="selecione_tipo_resumo">Ver Resumo:</string>
+    <string name="selecione_periodo">Período:</string>
+    <string name="importar_clientes_csv">Importar Clientes (CSV)</string>
+</resources>

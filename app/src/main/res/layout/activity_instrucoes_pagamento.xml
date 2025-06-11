@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/backButtonInstrucoesPagamento"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:contentDescription="Voltar"
+            android:focusable="true"
+            android:rotation="90"
+            android:src="@drawable/ic_cifrao_azul_escuro" />
+
+        <TextView
+            android:id="@+id/saveButtonInstrucoesPagamento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="@string/guardar_text"
+            android:textColor="#0000FF"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/backButtonInstrucoesPagamento"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:text="@string/payment_instructions_title"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chave PIX"
+                android:textStyle="bold"/>
+            <EditText
+                android:id="@+id/editTextPix"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Sua chave PIX"
+                android:inputType="text"
+                android:background="@drawable/rounded_edittext_white_bg"
+                android:padding="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dados Bancários"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"/>
+
+            <EditText
+                android:id="@+id/editTextBanco"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nome do Banco"
+                android:inputType="textCapWords"
+                android:background="@drawable/rounded_edittext_white_bg"
+                android:padding="12dp"
+                android:layout_marginTop="4dp"/>
+
+            <EditText
+                android:id="@+id/editTextAgencia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Agência"
+                android:inputType="text"
+                android:background="@drawable/rounded_edittext_white_bg"
+                android:padding="12dp"
+                android:layout_marginTop="8dp"/>
+
+            <EditText
+                android:id="@+id/editTextConta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Conta com dígito"
+                android:inputType="text"
+                android:background="@drawable/rounded_edittext_white_bg"
+                android:padding="12dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Outros Termos ou Informações"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"/>
+            <EditText
+                android:id="@+id/editTextOutrasInstrucoes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                android:hint="Ex: Termos de garantia, informações de contato..."
+                android:inputType="textMultiLine"
+                android:gravity="top|start"
+                android:background="@drawable/rounded_edittext_white_bg"
+                android:padding="12dp"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

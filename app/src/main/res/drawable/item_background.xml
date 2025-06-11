@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Camada de sombra -->
+    <item
+        android:left="6dp"
+        android:right="6dp"
+        android:top="6dp"
+        android:bottom="6dp">
+        <shape>
+            <solid android:color="#A0000000" /> <!-- Sombra mais escura -->
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
+    <!-- Camada de fundo -->
+    <item
+        android:left="2dp"
+        android:right="2dp"
+        android:top="2dp"
+        android:bottom="2dp">
+        <shape>
+            <solid android:color="@android:color/white" />
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
+</layer-list>

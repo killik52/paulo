@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#FFC107</color>
+    <color name="vermelho_excluir">#C9FF0000</color>
+
+    <color name="status_enviado_texto_bebe">#1F58A2</color>
+    <color name="status_enviado_fundo_bebe">#E6F0FB</color>
+    <color name="status_enviado_borda_clara">#D2E0F2</color>
+
+    <color name="azul_escuro_principal">#2C3E50</color>
+    <color name="azul_medio">#34495E</color>
+    <color name="cinza_claro_fundo">#ECF0F1</color>
+    <color name="cinza_claro_card">#F8F8F8</color>
+    <color name="cinza_texto">#7F8C8D</color>
+    <color name="azul_link">#3498DB</color>
+    <color name="cinza_borda">#BDC3C7</color>
+    <color name="verde_faturamento">#2ECC71</color>
+    <color name="azul_cliente">#3498DB</color>
+    <color name="roxo_artigo">#FAEDFF</color>
+    <color name="top_band_color">#00a5c3</color>
+    <color name="second_screen_status_bar_color">#00A5C3</color>
+</resources>

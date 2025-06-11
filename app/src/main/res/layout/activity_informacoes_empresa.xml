@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Título "Informações da Empresa" -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Informações da Empresa"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:paddingBottom="16dp" />
+
+        <!-- Campo: CNPJ -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CNPJ"
+            android:textColor="#757575"
+            android:textSize="14sp"
+            android:paddingBottom="4dp" />
+
+        <EditText
+            android:id="@+id/cnpjEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Digite o CNPJ da empresa"
+            android:inputType="text"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Campo: Nome da Empresa -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nome da Empresa"
+            android:textColor="#757575"
+            android:textSize="14sp"
+            android:paddingBottom="4dp" />
+
+        <EditText
+            android:id="@+id/nomeEmpresaEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Digite o nome da empresa"
+            android:inputType="text"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Campo: Endereço de E-mail -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Endereço de E-mail"
+            android:textColor="#757575"
+            android:textSize="14sp"
+            android:paddingBottom="4dp" />
+
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Digite o e-mail da empresa"
+            android:inputType="textEmailAddress"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Campo: Número de Telefone -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Número de Telefone"
+            android:textColor="#757575"
+            android:textSize="14sp"
+            android:paddingBottom="4dp" />
+
+        <EditText
+            android:id="@+id/telefoneEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Digite o número de telefone"
+            android:inputType="phone"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Campo: Informações Adicionais -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Informações Adicionais"
+            android:textColor="#757575"
+            android:textSize="14sp"
+            android:paddingBottom="4dp" />
+
+        <EditText
+            android:id="@+id/informacoesAdicionaisEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Digite informações adicionais"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            android:gravity="top"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Seção: Endereço -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Endereço"
+            android:textColor="#757575"
+            android:textSize="14sp"
+            android:paddingBottom="4dp" />
+
+        <!-- Campo: CEP -->
+        <EditText
+            android:id="@+id/cepEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Digite o CEP"
+            android:inputType="text"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Campo: Estado -->
+        <EditText
+            android:id="@+id/estadoEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Digite o estado"
+            android:inputType="text"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Campo: País -->
+        <EditText
+            android:id="@+id/paisEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Digite o país"
+            android:inputType="text"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Campo: Cidade -->
+        <EditText
+            android:id="@+id/cidadeEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Digite a cidade"
+            android:inputType="text"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:fitsSystemWindows="true"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/faturaTitleContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/faturaTitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FATURA"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/faturaTitleArrow"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginStart="8dp"
+            android:contentDescription="Abrir menu"
+            android:scaleType="fitCenter"
+            android:src="@drawable/abaixo" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/graficosButton"
+        android:layout_width="28dp"       android:layout_height="25dp"      android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@null"
+        android:contentDescription="Gráficos"
+        android:scaleType="fitCenter"
+        android:src="@drawable/grafico"
+        app:tint="#0D2F6A"
+        app:layout_constraintEnd_toStartOf="@+id/searchButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/searchButton"
+        android:layout_width="28dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="28dp"
+        android:background="@null"
+        android:contentDescription="Pesquisar"
+        android:scaleType="fitCenter"
+        android:src="@drawable/lupa"
+        app:tint="#0D2F6A"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <GridView
+        android:id="@+id/menuGridView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxHeight="300dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/gridview_background"
+        android:elevation="30dp"
+        android:numColumns="1"
+        android:padding="16dp"
+        android:verticalSpacing="8dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/faturaTitleContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/barcodeImageView"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp" android:contentDescription="Código de barras gerado"
+        app:layout_constraintTop_toBottomOf="@id/faturaTitleContainer" app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewFaturas"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/transparent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/barcodeImageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/homeIcon" />
+
+    <ImageButton
+        android:id="@+id/addButton"
+        android:layout_width="69dp"
+        android:layout_height="68dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="44dp"
+        android:background="@null"
+        android:contentDescription="@string/add_button_description"
+        android:scaleType="fitCenter"
+        android:src="@drawable/add"
+        app:layout_constraintBottom_toTopOf="@id/homeIcon"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/homeIcon"
+        android:layout_width="140dp"
+        android:layout_height="52dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="Home"
+        android:src="@drawable/botao_home"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/dollarIcon"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.33" />
+
+    <ImageView
+        android:id="@+id/dollarIcon"
+        android:layout_width="155dp"
+        android:layout_height="91dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="Cash Flow"
+        android:src="@drawable/codgo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/moreIcon"
+        app:layout_constraintStart_toEndOf="@id/homeIcon"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.33" />
+
+    <ImageView
+        android:id="@+id/moreIcon"
+        android:layout_width="150dp"
+        android:layout_height="52dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="More"
+        android:src="@drawable/mais"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/dollarIcon"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.33" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
