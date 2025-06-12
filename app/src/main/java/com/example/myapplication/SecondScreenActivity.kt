@@ -50,6 +50,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import kotlin.math.max
 
 class SecondScreenActivity : AppCompatActivity() {
 
@@ -283,7 +284,7 @@ class SecondScreenActivity : AppCompatActivity() {
                     }
                 } else {
                     Log.d("SecondScreen", "Nenhum cliente selecionado. Abrindo CriarNovoClienteActivity para adicionar um novo.")
-                    val intentParaAdicionar = Intent(this, CriarNovoClienteActivity::class.java) // <-- MUDANÇA AQUI
+                    val intentParaAdicionar = Intent(this, CriarNovoClienteActivity::class.java)
                     startActivityForResult(intentParaAdicionar, ADICIONAR_CLIENTE_REQUEST_CODE)
                 }
             } catch (e: Exception) {
@@ -304,7 +305,6 @@ class SecondScreenActivity : AppCompatActivity() {
                 artigoAdapter.notifyDataSetChanged()
                 atualizarTopAdicionarClienteComNome()
                 showToast("Cliente, artigos, notas e fotos removidos da fatura atual. Notas padrão restauradas.")
-                updateSubtotal()
                 isFaturaSaved = false
                 faturaEnviadaSucesso = false
                 if(faturaId != -1L) {
@@ -329,7 +329,6 @@ class SecondScreenActivity : AppCompatActivity() {
                 artigoAdapter.notifyDataSetChanged()
                 atualizarTopAdicionarClienteComNome()
                 showToast("Cliente, artigos, notas e fotos removidos da fatura atual. Notas padrão restauradas.")
-                updateSubtotal()
                 isFaturaSaved = false
                 faturaEnviadaSucesso = false
                 if(faturaId != -1L) {
@@ -386,7 +385,7 @@ class SecondScreenActivity : AppCompatActivity() {
 
         binding.viewIcon.setOnClickListener {
             try {
-                val pdfFile = generatePDF()
+                val pdfFile = generatePDF() // Chamada para o PDF completo
                 if (pdfFile != null) {
                     viewPDF(pdfFile)
                 } else {
@@ -400,7 +399,7 @@ class SecondScreenActivity : AppCompatActivity() {
 
         binding.sendIcon.setOnClickListener {
             try {
-                val pdfFile = generatePDF()
+                val pdfFile = generatePDF() // Ainda usando o PDF completo para o ícone de envio
                 if (pdfFile != null) {
                     sharePDF(pdfFile) { sucesso ->
                         if (sucesso) {
@@ -416,6 +415,20 @@ class SecondScreenActivity : AppCompatActivity() {
                 showToast("Erro ao compartilhar PDF: ${e.message}")
             }
         }
+
+        binding.emailButton.setOnClickListener {
+            try {
+                val pdfFile = generateEmailPdf() // Gera o PDF simplificado
+                if (pdfFile != null) {
+                    viewPDF(pdfFile) // Abre o PDF diretamente
+                } else {
+                    Log.w("SecondScreen", "generateEmailPdf retornou nulo ao tentar abrir.")
+                }
+            } catch (e: Exception) {
+                Log.e("SecondScreen", "Erro ao gerar e abrir PDF para email: ${e.message}", e)
+                showToast("Erro ao gerar e abrir PDF para email: ${e.message}")
+            }
+        }
     }
 
     private fun generateBarcode(text: String, width: Int = 300, height: Int = 60): Bitmap? {
@@ -425,7 +438,7 @@ class SecondScreenActivity : AppCompatActivity() {
                 Log.w("SecondScreen", "Texto para código de barras está vazio.")
                 return null
             }
-            val bitMatrix: BitMatrix = MultiFormatWriter().encode(
+            val bitMatrix: BitMatrix = MultiFormatWriter().encode( // Corrigido aqui
                 text,
                 BarcodeFormat.CODE_128,
                 width,
@@ -664,7 +677,6 @@ class SecondScreenActivity : AppCompatActivity() {
         val cardPadding = 8f
         var clienteY = cardTop + cardPadding
         val clienteMaxWidthPdf = contentWidth / 2f - cardPadding
-        val faturaInfoMaxWidthPdf = contentWidth / 2f - cardPadding
 
         val db = dbHelper?.readableDatabase
         val clienteInfoList = mutableListOf<Pair<String, TextPaint>>()
@@ -715,33 +727,32 @@ class SecondScreenActivity : AppCompatActivity() {
         }
 
         var invoiceY = cardTop + cardPadding
-        val faturaInfoStartX = pageWidth - margin - cardPadding - faturaInfoMaxWidthPdf
-        val faturaInfoValueSpacing = 3f
+        // Posiciona os valores da fatura/data alinhados à direita do retângulo
+        val rightEdgeForValues = pageWidth - margin - cardPadding // Coordenada X para o alinhamento da direita dos valores
+        val labelValueSpacing = 3f
 
+        // Fatura Nº
         val numFaturaLabel = "Fatura Nº:"
-        val numFaturaLabelWidth = labelPaint.measureText(numFaturaLabel)
         val invoiceText = binding.invoiceNumberTextView.text?.toString() ?: "#${faturaId.toString().padStart(3, '0')}"
-        val invoiceTextWidth = textPaint.measureText(invoiceText)
-        val numFaturaCombinedWidth = numFaturaLabelWidth + faturaInfoValueSpacing + invoiceTextWidth
-        var xPosFaturaNumeroLabel = (pageWidth - margin - cardPadding) - numFaturaCombinedWidth
-        xPosFaturaNumeroLabel = maxOf(xPosFaturaNumeroLabel, faturaInfoStartX)
 
-        currentCanvas.drawText(numFaturaLabel, xPosFaturaNumeroLabel, invoiceY + labelPaint.textSize*0.3f, labelPaint)
-        currentCanvas.drawText(invoiceText, xPosFaturaNumeroLabel + numFaturaLabelWidth + faturaInfoValueSpacing, invoiceY + labelPaint.textSize*0.3f, textPaint)
+        val invoiceTextX = rightEdgeForValues - textPaint.measureText(invoiceText) // X para o valor do número da fatura
+        val numFaturaLabelX = invoiceTextX - labelPaint.measureText(numFaturaLabel) - labelValueSpacing // X para o label
+
+        currentCanvas.drawText(numFaturaLabel, numFaturaLabelX, invoiceY + labelPaint.textSize*0.3f, labelPaint)
+        currentCanvas.drawText(invoiceText, invoiceTextX, invoiceY + labelPaint.textSize*0.3f, textPaint)
         invoiceY += labelPaint.textSize + 4f
 
+        // Emitido
         val emitidoLabel = "Emitido:"
-        val emitidoLabelWidth = labelPaint.measureText(emitidoLabel)
         val dateFormat = SimpleDateFormat("dd/MM/yy", Locale("pt", "BR"))
         val issuedDate = dateFormat.format(Date())
-        val issuedDateWidth = textPaint.measureText(issuedDate)
-        val emitidoCombinedWidth = emitidoLabelWidth + faturaInfoValueSpacing + issuedDateWidth
-        var xPosEmitidoLabel = (pageWidth - margin - cardPadding) - emitidoCombinedWidth
-        xPosEmitidoLabel = maxOf(xPosEmitidoLabel, faturaInfoStartX)
 
-        currentCanvas.drawText(emitidoLabel, xPosEmitidoLabel, invoiceY + labelPaint.textSize*0.3f, labelPaint)
-        currentCanvas.drawText(issuedDate, xPosEmitidoLabel + emitidoLabelWidth + faturaInfoValueSpacing, invoiceY + labelPaint.textSize*0.3f, textPaint)
-        invoiceY += labelPaint.textSize + 4f
+        val issuedDateTextX = rightEdgeForValues - textPaint.measureText(issuedDate) // X para o valor da data de emissão
+        val emitidoLabelX = issuedDateTextX - labelPaint.measureText(emitidoLabel) - labelValueSpacing // X para o label
+
+        currentCanvas.drawText(emitidoLabel, emitidoLabelX, invoiceY + labelPaint.textSize*0.3f, labelPaint)
+        currentCanvas.drawText(issuedDate, issuedDateTextX, invoiceY + labelPaint.textSize*0.3f, textPaint)
+        invoiceY += textPaint.textSize + 10f // Espaço após a data
 
         val cardBottom = maxOf(clienteY, invoiceY) -1f + cardPadding
         currentCanvas.drawRoundRect(margin, cardTop, pageWidth - margin, cardBottom, 5f, 5f, borderPaint)
@@ -904,6 +915,7 @@ class SecondScreenActivity : AppCompatActivity() {
                 .build()
 
             if (currentYPosition + instrucoesLayout.height > pageHeight - margin - 30f) {
+                // Handle new page logic here if necessary. For simplicity, assume it fits or is truncated.
             }
 
             currentCanvas.save()
@@ -964,6 +976,380 @@ class SecondScreenActivity : AppCompatActivity() {
             pdfDocument.close()
         }
     }
+
+    private fun generateEmailPdf(): File? {
+        Log.d("SecondScreen", "Iniciando geração de PDF SIMPLIFICADO para email.")
+        if (nomeClienteSalvo.isNullOrEmpty() || nomeClienteSalvo == getString(R.string.adicionar_cliente_text)) {
+            showToast("Selecione um cliente antes de gerar o PDF para email.")
+            Log.w("SecondScreen", "Geração de PDF para email cancelada: Cliente não selecionado.")
+            return null
+        }
+
+        val pageWidth = 595f
+        val pageHeight = 842f
+        val margin = 30f
+        val contentWidth = pageWidth - 2 * margin
+
+        val pdfDocument = PdfDocument()
+        val pageInfo = PdfDocument.PageInfo.Builder(pageWidth.toInt(), pageHeight.toInt(), 1).create()
+        val currentPage = pdfDocument.startPage(pageInfo)
+        val currentCanvas: Canvas? = currentPage.canvas
+        var currentYPosition = margin
+
+        if (currentCanvas == null) {
+            Log.e("SecondScreen", "Canvas do PDF (email) é nulo. Não é possível desenhar.")
+            pdfDocument.close()
+            showToast("Erro interno ao criar página do PDF para email.")
+            return null
+        }
+
+        // --- Styles ---
+        val titlePaint = TextPaint().apply {
+            typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+            textSize = 28f
+            color = android.graphics.Color.BLACK
+        }
+        val headerPaint = TextPaint().apply {
+            typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+            textSize = 14f
+            color = android.graphics.Color.BLACK
+        }
+        val textPaint = TextPaint().apply {
+            typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL)
+            textSize = 11f
+            color = android.graphics.Color.BLACK
+        }
+        val empresaInfoPaint = TextPaint().apply {
+            typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL)
+            textSize = 10f
+            color = Color.parseColor("#666666")
+        }
+        val empresaNamePaint = TextPaint().apply {
+            typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+            textSize = 18f
+            color = android.graphics.Color.BLACK
+        }
+        val labelPaint = TextPaint().apply {
+            typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+            textSize = 10f
+            color = Color.parseColor("#444444")
+        }
+        val borderPaint = Paint().apply {
+            color = Color.parseColor("#E0E0E0")
+            style = Paint.Style.STROKE
+            strokeWidth = 0.5f
+        }
+        val clienteNamePaint = TextPaint().apply {
+            typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+            textSize = 11f
+            color = android.graphics.Color.BLACK
+        }
+        val clienteInfoPaint = TextPaint().apply {
+            typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL)
+            textSize = 10f
+            color = Color.parseColor("#666666")
+        }
+        val pageNumPaint = TextPaint().apply {
+            textSize = 8f
+            color = Color.DKGRAY
+        }
+
+        // --- HEADER: Company Info and Logo ---
+        var yPosEmpresaAtual = currentYPosition
+        var logoHeight = 0f
+        var logoActualWidth = 0f
+        val gapBetweenCompanyAndLogo = 15f
+
+        val logoPrefs = getSharedPreferences("LogotipoPrefs", MODE_PRIVATE)
+        val logoSizeProgress = logoPrefs.getInt("logo_size", 30)
+        val minLogoDisplaySizePdf = 60f
+        val maxLogoDisplaySizePdf = 300f
+        val actualLogoSizeForPdf = minLogoDisplaySizePdf + (logoSizeProgress * (maxLogoDisplaySizePdf - minLogoDisplaySizePdf) / 100f)
+        val logoUriString = logoPrefs.getString("logo_uri", null)
+
+        if (logoUriString != null) {
+            try {
+                val logoUri = Uri.parse(logoUriString)
+                contentResolver.openInputStream(logoUri)?.use { inputStream ->
+                    val originalLogoBitmap = BitmapFactory.decodeStream(inputStream)
+                    if (originalLogoBitmap == null) {
+                        Log.w("SecondScreen", "Falha ao decodificar o bitmap do logotipo a partir do URI.")
+                    } else {
+                        val aspectRatio = originalLogoBitmap.width.toFloat() / originalLogoBitmap.height.toFloat()
+                        var targetWidth = actualLogoSizeForPdf
+                        var targetHeight = targetWidth / aspectRatio
+                        val maxPermittedHeight = pageHeight * 0.15f // Smaller logo for email PDF
+                        if (targetHeight > maxPermittedHeight) {
+                            targetHeight = maxPermittedHeight
+                            targetWidth = targetHeight * aspectRatio
+                        }
+                        val maxPermittedWidth = contentWidth * 0.40f // Smaller logo for email PDF
+                        if (targetWidth > maxPermittedWidth) {
+                            targetWidth = maxPermittedWidth
+                            targetHeight = targetWidth / aspectRatio
+                        }
+
+                        if (targetWidth > 0 && targetHeight > 0) {
+                            val logoBitmap = Bitmap.createScaledBitmap(originalLogoBitmap, targetWidth.toInt(), targetHeight.toInt(), true)
+                            logoHeight = logoBitmap.height.toFloat()
+                            logoActualWidth = logoBitmap.width.toFloat()
+
+                            val roundedBitmap = Bitmap.createBitmap(logoBitmap.width, logoBitmap.height, Bitmap.Config.ARGB_8888)
+                            val tempCanvas = Canvas(roundedBitmap)
+                            val tempPaint = Paint().apply { isAntiAlias = true }
+                            val rect = RectF(0f, 0f, logoBitmap.width.toFloat(), logoBitmap.height.toFloat())
+                            tempCanvas.drawRoundRect(rect, 8f, 8f, tempPaint)
+                            tempPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+                            tempCanvas.drawBitmap(logoBitmap, 0f, 0f, tempPaint)
+                            val logoLeft = pageWidth - margin - logoBitmap.width.toFloat()
+                            currentCanvas.drawBitmap(roundedBitmap, logoLeft, yPosEmpresaAtual, null)
+                            logoBitmap.recycle()
+                            roundedBitmap.recycle()
+                        } else {
+                            Log.w("SecondScreen", "Dimensões do logo calculadas são inválidas: $targetWidth x $targetHeight")
+                        }
+                        originalLogoBitmap.recycle()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("SecondScreen", "Erro ao carregar ou processar logo para email PDF: ${e.message}", e)
+            }
+        }
+
+        val empresaMaxWidth = if (logoActualWidth > 0) {
+            contentWidth - logoActualWidth - gapBetweenCompanyAndLogo
+        } else {
+            contentWidth
+        }
+
+        val cnpjEmpresa = sharedPreferences.getString("cnpj", "") ?: ""
+        val nomeEmpresa = sharedPreferences.getString("nome_empresa", "") ?: ""
+        val emailEmpresa = sharedPreferences.getString("email", "") ?: ""
+        val telefoneEmpresa = sharedPreferences.getString("telefone", "") ?: ""
+        val cepEmpresa = sharedPreferences.getString("cep", "") ?: ""
+        val estadoEmpresa = sharedPreferences.getString("estado", "") ?: ""
+        val cidadeEmpresa = sharedPreferences.getString("cidade", "") ?: ""
+
+        val nomeEmpresaUpper = nomeEmpresa.uppercase(Locale.getDefault())
+        val nomeEmpresaLayout = StaticLayout.Builder.obtain(nomeEmpresaUpper, 0, nomeEmpresaUpper.length, empresaNamePaint, empresaMaxWidth.toInt())
+            .setLineSpacing(0f, 0.9f).setIncludePad(false).build()
+        currentCanvas.save()
+        currentCanvas.translate(margin, yPosEmpresaAtual)
+        nomeEmpresaLayout.draw(currentCanvas)
+        currentCanvas.restore()
+        yPosEmpresaAtual += nomeEmpresaLayout.height + 1f
+
+        val empresaInfoList = mutableListOf<String>()
+        if (cnpjEmpresa.isNotEmpty()) empresaInfoList.add("CNPJ: $cnpjEmpresa")
+        if (emailEmpresa.isNotEmpty()) empresaInfoList.add("Email: $emailEmpresa")
+        if (telefoneEmpresa.isNotEmpty()) empresaInfoList.add("Telefone: $telefoneEmpresa")
+        var enderecoEmpresaConcatenado = ""
+        if (cidadeEmpresa.isNotEmpty()) enderecoEmpresaConcatenado += "$cidadeEmpresa"
+        if (estadoEmpresa.isNotEmpty()) {
+            if (enderecoEmpresaConcatenado.isNotEmpty()) enderecoEmpresaConcatenado += ", "
+            enderecoEmpresaConcatenado += estadoEmpresa
+        }
+        if (cepEmpresa.isNotEmpty()) {
+            if (enderecoEmpresaConcatenado.isNotEmpty()) enderecoEmpresaConcatenado += " "
+            enderecoEmpresaConcatenado += "CEP: $cepEmpresa"
+        }
+        if(enderecoEmpresaConcatenado.isNotEmpty()) empresaInfoList.add(enderecoEmpresaConcatenado)
+
+        empresaInfoList.forEach { info ->
+            val infoLayout = StaticLayout.Builder.obtain(info, 0, info.length, empresaInfoPaint, empresaMaxWidth.toInt())
+                .setLineSpacing(0f, 0.9f).setIncludePad(false).build()
+            currentCanvas.save()
+            currentCanvas.translate(margin, yPosEmpresaAtual)
+            infoLayout.draw(currentCanvas)
+            currentCanvas.restore()
+            yPosEmpresaAtual += infoLayout.height + 0.5f
+        }
+        currentYPosition = maxOf(yPosEmpresaAtual, currentYPosition + logoHeight) + 15f
+
+        // --- CLIENT INFORMATION & INVOICE DETAILS ---
+        val cardTop = currentYPosition
+        val cardPadding = 8f
+        var clientInfoY = currentYPosition + cardPadding
+        var invoiceInfoY = currentYPosition + cardPadding
+
+        val db = dbHelper?.readableDatabase
+        var clientNome: String? = null
+        var clientEmail: String? = null
+        var clientTelefone: String? = null
+        var clientCpf: String? = null
+        var clientCnpj: String? = null
+        var clientLogradouro: String? = null
+        var clientNumero: String? = null
+        var clientComplemento: String? = null
+        var clientBairro: String? = null
+        var clientMunicipio: String? = null
+        var clientUf: String? = null
+        var clientCep: String? = null
+
+        db?.query(
+            ClienteContract.ClienteEntry.TABLE_NAME, null,
+            "${BaseColumns._ID} = ?", arrayOf(clienteIdSalvo.toString()),
+            null, null, null
+        )?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                clientNome = cursor.getString(cursor.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_NOME))
+                clientEmail = cursor.getString(cursor.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_EMAIL))
+                clientTelefone = cursor.getString(cursor.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_TELEFONE))
+                clientCpf = cursor.getString(cursor.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_CPF))
+                clientCnpj = cursor.getString(cursor.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_CNPJ))
+                clientLogradouro = cursor.getString(cursor.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_LOGRADOURO))
+                clientNumero = cursor.getString(cursor.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_NUMERO))
+                clientComplemento = cursor.getString(cursor.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_COMPLEMENTO))
+                clientBairro = cursor.getString(cursor.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_BAIRRO))
+                clientMunicipio = cursor.getString(cursor.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_MUNICIPIO))
+                clientUf = cursor.getString(cursor.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_UF))
+                clientCep = cursor.getString(cursor.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_CEP))
+            }
+        }
+
+        val clientDetailsStartX = margin + cardPadding
+        val clientDetailsMaxWidth = contentWidth / 2f - cardPadding
+
+        currentCanvas.drawText("Cliente:", clientDetailsStartX, clientInfoY + labelPaint.textSize, labelPaint)
+        clientInfoY += labelPaint.textSize + 2f
+        currentCanvas.drawText(clientNome ?: "N/A", clientDetailsStartX, clientInfoY + textPaint.textSize, textPaint)
+        clientInfoY += textPaint.textSize + 2f
+        if (!clientEmail.isNullOrEmpty()) {
+            val emailLayout = StaticLayout.Builder.obtain(clientEmail!!, 0, clientEmail!!.length, textPaint, clientDetailsMaxWidth.toInt())
+                .setLineSpacing(0f, 0.9f).setIncludePad(false).build()
+            currentCanvas.save()
+            currentCanvas.translate(clientDetailsStartX, clientInfoY)
+            emailLayout.draw(currentCanvas)
+            currentCanvas.restore()
+            clientInfoY += emailLayout.height + 2f
+        }
+        if (!clientTelefone.isNullOrEmpty()) {
+            val telLayout = StaticLayout.Builder.obtain(clientTelefone!!, 0, clientTelefone!!.length, textPaint, clientDetailsMaxWidth.toInt())
+                .setLineSpacing(0f, 0.9f).setIncludePad(false).build()
+            currentCanvas.save()
+            currentCanvas.translate(clientDetailsStartX, clientInfoY)
+            telLayout.draw(currentCanvas)
+            currentCanvas.restore()
+            clientInfoY += telLayout.height + 2f
+        }
+        if (!clientCpf.isNullOrEmpty()) {
+            currentCanvas.drawText("CPF: ${clientCpf!!}", clientDetailsStartX, clientInfoY + textPaint.textSize, textPaint)
+            clientInfoY += textPaint.textSize + 2f
+        }
+        if (!clientCnpj.isNullOrEmpty()) {
+            currentCanvas.drawText("CNPJ: ${clientCnpj!!}", clientDetailsStartX, clientInfoY + textPaint.textSize, textPaint)
+            clientInfoY += textPaint.textSize + 2f
+        }
+        var clientAddress = ""
+        if (!clientLogradouro.isNullOrEmpty()) clientAddress += clientLogradouro
+        if (!clientNumero.isNullOrEmpty()) clientAddress += ", ${clientNumero}"
+        if (!clientBairro.isNullOrEmpty()) clientAddress += " - ${clientBairro}"
+        if (!clientMunicipio.isNullOrEmpty()) clientAddress += ", ${clientMunicipio}"
+        if (!clientUf.isNullOrEmpty()) clientAddress += "/${clientUf}"
+        if (!clientCep.isNullOrEmpty()) clientAddress += " - CEP: ${clientCep}"
+
+        if (clientAddress.isNotEmpty()) {
+            val addressLayout = StaticLayout.Builder.obtain(clientAddress.trim(), 0, clientAddress.trim().length, textPaint, clientDetailsMaxWidth.toInt())
+                .setLineSpacing(0f, 0.9f).setIncludePad(false).build()
+            currentCanvas.save()
+            currentCanvas.translate(clientDetailsStartX, clientInfoY)
+            addressLayout.draw(currentCanvas)
+            currentCanvas.restore()
+            clientInfoY += addressLayout.height + 2f
+        }
+
+        // Posiciona os valores da fatura/data alinhados à direita do retângulo
+        val rightEdgeForValues = pageWidth - margin - cardPadding // Coordenada X para o alinhamento da direita dos valores
+        val labelValueSpacing = 3f
+
+        // Fatura Nº
+        val numFaturaLabel = "Fatura Nº:"
+        val invoiceText = binding.invoiceNumberTextView.text?.toString() ?: "#${faturaId.toString().padStart(3, '0')}"
+
+        val invoiceTextX = rightEdgeForValues - textPaint.measureText(invoiceText) // X para o valor do número da fatura
+        val numFaturaLabelX = invoiceTextX - labelPaint.measureText(numFaturaLabel) - labelValueSpacing // X para o label
+
+        currentCanvas.drawText(numFaturaLabel, numFaturaLabelX, invoiceInfoY + labelPaint.textSize*0.3f, labelPaint)
+        currentCanvas.drawText(invoiceText, invoiceTextX, invoiceInfoY + labelPaint.textSize*0.3f, textPaint)
+        invoiceInfoY += labelPaint.textSize + 4f
+
+        // Emitido
+        val emitidoLabel = "Emitido:"
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
+        val issuedDate = dateFormat.format(Date())
+
+        val issuedDateTextX = rightEdgeForValues - textPaint.measureText(issuedDate) // X para o valor da data de emissão
+        val emitidoLabelX = issuedDateTextX - labelPaint.measureText(emitidoLabel) - labelValueSpacing // X para o label
+
+        currentCanvas.drawText(emitidoLabel, emitidoLabelX, invoiceInfoY + labelPaint.textSize*0.3f, labelPaint)
+        currentCanvas.drawText(issuedDate, issuedDateTextX, invoiceInfoY + labelPaint.textSize*0.3f, textPaint)
+        invoiceInfoY += textPaint.textSize + 10f // Espaço após a data
+
+
+        // Calcula a posição final do bloco de informações antes de desenhar o retângulo
+        val maxBlockY = max(clientInfoY, invoiceInfoY)
+        currentCanvas.drawRect(margin, cardTop, pageWidth - margin, maxBlockY + cardPadding, borderPaint) // Retângulo envolvendo as informações
+        currentYPosition = maxBlockY + cardPadding + 15f // Atualiza a posição Y para desenhar abaixo do retângulo, com espaço extra
+
+        // Barcode - AGORA DESENHADO FORA DO RETÂNGULO E CENTRALIZADO
+        val barcodeText = if (faturaId != -1L) faturaId.toString() else invoiceText.replace("#", "") // Usando invoiceText
+        val barcodeBitmap = generateBarcode(barcodeText, (contentWidth * 0.6f).toInt(), 50) // Ajusta largura do barcode para centralizar melhor
+        barcodeBitmap?.let {
+            val barcodeX = margin + (contentWidth - it.width) / 2f // Centraliza o código de barras horizontalmente
+            currentCanvas.drawBitmap(it, barcodeX, currentYPosition, null)
+            currentYPosition += it.height + 15f // Adiciona altura do barcode + espaço
+            it.recycle()
+        }
+
+        // NO ARTICLES TABLE
+        // NO TOTALS
+        // NO NOTES
+        // NO PAYMENT INSTRUCTIONS
+
+        // --- FOOTER: Page Number ---
+        val pageNumText = "Pág 1"
+        val pageNumTextWidth = pageNumPaint.measureText(pageNumText)
+        val pageNumY = pageHeight - margin - 2f
+        currentCanvas.drawText(pageNumText, pageWidth - margin - pageNumTextWidth, pageNumY + pageNumPaint.textSize*0.3f, pageNumPaint)
+
+        pdfDocument.finishPage(currentPage)
+
+        val fileName = "Fatura_Simplificada_${binding.invoiceNumberTextView.text?.toString()?.replace("#","") ?: faturaId}_${System.currentTimeMillis()}.pdf"
+
+        val storageDir = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+        if (storageDir == null) {
+            Log.e("SecondScreen", "Diretório de armazenamento externo não disponível para PDF simplificado.")
+            showToast("Erro: Armazenamento externo não disponível para salvar PDF simplificado.")
+            pdfDocument.close()
+            return null
+        }
+        if (!storageDir.exists() && !storageDir.mkdirs()) {
+            Log.e("SecondScreen", "Não foi possível criar o diretório de documentos para PDF simplificado.")
+            showToast("Erro ao criar diretório para salvar PDF simplificado.")
+            pdfDocument.close()
+            return null
+        }
+
+        val file = File(storageDir, fileName)
+        try {
+            FileOutputStream(file).use { outputStream ->
+                pdfDocument.writeTo(outputStream)
+            }
+            Log.d("SecondScreen", "PDF SIMPLIFICADO para email gerado com sucesso: ${file.absolutePath}")
+            return file
+        } catch (e: IOException) {
+            Log.e("SecondScreen", "Erro de I/O ao salvar PDF simplificado para email: ${e.message}", e)
+            showToast("Erro de I/O ao salvar PDF simplificado para email: ${e.message}")
+            return null
+        } catch (e: Exception) {
+            Log.e("SecondScreen", "Erro geral ao salvar PDF simplificado para email: ${e.message}", e)
+            showToast("Erro ao salvar PDF simplificado para email: ${e.message}")
+            return null
+        } finally {
+            pdfDocument.close()
+        }
+    }
+
 
     private fun trySaveAndExit() {
         val podeSalvar = !nomeClienteSalvo.isNullOrEmpty() &&
@@ -1503,7 +1889,7 @@ class SecondScreenActivity : AppCompatActivity() {
         } else {
             desconto
         }
-        Log.d("SecondScreen", "Desconto (valor numérico): $desconto, isPercentDesconto: $isPercentDesconto, Desconto calculado (descontoValor): $descontoValor")
+        Log.d("SecondScreen", "Desconto (valor numérico): $desconto, isPercent=$isPercentDesconto, Desconto calculado (descontoValor): $descontoValor")
         val descontoTextoExibicao = if (isPercentDesconto) {
             "${String.format(Locale("pt", "BR"), "%.2f", desconto)}% (${decimalFormat.format(descontoValor)})"
         } else {
