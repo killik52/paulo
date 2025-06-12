@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -28,7 +27,6 @@ import com.example.myapplication.databinding.ActivityMainBinding
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -235,7 +233,7 @@ class MainActivity : AppCompatActivity() {
                 val selectedOption = menuOptionsAdapter.getItem(position).toString()
                 when (selectedOption) {
                     "Fatura" -> toggleGridView()
-                    "Cliente" -> {
+                    "com/example/myapplication/database/Cliente" -> {
                         startActivity(Intent(this, ListarClientesActivity::class.java))
                         toggleGridView()
                     }
