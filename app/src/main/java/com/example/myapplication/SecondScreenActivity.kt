@@ -257,7 +257,7 @@ class SecondScreenActivity : AppCompatActivity() {
                     )
                     cursor?.use { c ->
                         if (c.moveToFirst()) {
-                            intentParaEditarCliente.putExtra("cliente_id", c.getLong(c.getColumnIndexOrThrow(BaseColumns._ID)))
+                            intentParaEditarCliente.putExtra("cliente_id", c.getString(c.getColumnIndexOrThrow(BaseColumns._ID)))
                             intentParaEditarCliente.putExtra("nome_cliente", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_NOME)))
                             intentParaEditarCliente.putExtra("email", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_EMAIL)))
                             intentParaEditarCliente.putExtra("telefone", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_TELEFONE)))
@@ -273,18 +273,18 @@ class SecondScreenActivity : AppCompatActivity() {
                             intentParaEditarCliente.putExtra("cep", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_CEP)))
                             startActivityForResult(intentParaEditarCliente, ADICIONAR_CLIENTE_REQUEST_CODE)
                         } else {
-                            Log.w("SecondScreen", "Cliente com ID $clienteIdSalvo não encontrado no banco. Abrindo CriarNovoClienteActivity.")
-                            val intentParaAdicionar = Intent(this, CriarNovoClienteActivity::class.java)
+                            Log.w("SecondScreen", "Cliente com ID $clienteIdSalvo não encontrado no banco. Abrindo AdicionarClienteActivity.")
+                            val intentParaAdicionar = Intent(this, AdicionarClienteActivity::class.java)
                             startActivityForResult(intentParaAdicionar, ADICIONAR_CLIENTE_REQUEST_CODE)
                         }
                     } ?: run {
                         showToast("Erro ao consultar dados do cliente.")
-                        val intentParaAdicionar = Intent(this, CriarNovoClienteActivity::class.java)
+                        val intentParaAdicionar = Intent(this, AdicionarClienteActivity::class.java)
                         startActivityForResult(intentParaAdicionar, ADICIONAR_CLIENTE_REQUEST_CODE)
                     }
                 } else {
-                    Log.d("SecondScreen", "Nenhum cliente selecionado. Abrindo CriarNovoClienteActivity para adicionar um novo.")
-                    val intentParaAdicionar = Intent(this, CriarNovoClienteActivity::class.java)
+                    Log.d("SecondScreen", "Nenhum cliente selecionado. Abrindo AdicionarClienteActivity para adicionar um novo.")
+                    val intentParaAdicionar = Intent(this, AdicionarClienteActivity::class.java)
                     startActivityForResult(intentParaAdicionar, ADICIONAR_CLIENTE_REQUEST_CODE)
                 }
             } catch (e: Exception) {
@@ -292,7 +292,6 @@ class SecondScreenActivity : AppCompatActivity() {
                 showToast("Erro ao processar clique no cliente: ${e.message}")
             }
         }
-
 
         binding.topAdicionarClienteTextViewSecondScreen.setOnLongClickListener {
             if (!nomeClienteSalvo.isNullOrEmpty() || artigosList.isNotEmpty() || notasList.isNotEmpty() || fotosList.isNotEmpty()) {
@@ -429,6 +428,18 @@ class SecondScreenActivity : AppCompatActivity() {
                 showToast("Erro ao gerar e abrir PDF para email: ${e.message}")
             }
         }
+
+        // Nota: O elemento textViewNovocliente não foi encontrado no layout activity_second_screen.xml.
+        // Se textViewNovocliente estiver em outro layout ou for um erro de nomeação, por favor, forneça mais detalhes.
+        // Para adicionar a funcionalidade de abrir CriarNovoClienteActivity, um elemento no layout precisa ser identificado.
+        // Exemplo de como seria se textViewNovocliente existisse:
+        /*
+        binding.textViewNovocliente.setOnClickListener {
+            Log.d("SecondScreen", "Clicou em textViewNovocliente")
+            val intent = Intent(this, CriarNovoClienteActivity::class.java)
+            startActivityForResult(intent, ADICIONAR_CLIENTE_REQUEST_CODE)
+        }
+        */
     }
 
     private fun generateBarcode(text: String, width: Int = 300, height: Int = 60): Bitmap? {
@@ -438,7 +449,7 @@ class SecondScreenActivity : AppCompatActivity() {
                 Log.w("SecondScreen", "Texto para código de barras está vazio.")
                 return null
             }
-            val bitMatrix: BitMatrix = MultiFormatWriter().encode( // Corrigido aqui
+            val bitMatrix: BitMatrix = MultiFormatWriter().encode(
                 text,
                 BarcodeFormat.CODE_128,
                 width,
@@ -637,7 +648,7 @@ class SecondScreenActivity : AppCompatActivity() {
         val cidadeEmpresa = sharedPreferences.getString("cidade", "") ?: ""
 
         val nomeEmpresaUpper = nomeEmpresa.uppercase(Locale.getDefault())
-        val nomeEmpresaLayout = StaticLayout.Builder.obtain(nomeEmpresaUpper, 0, nomeEmpresaUpper.length, empresaNamePaint, empresaMaxWidth.toInt())
+        val nomeEmpresaLayout = StaticLayout.Builder.obtain(nomeEmpresaUpper, 0, nomeEmpresaUpper.length(), empresaNamePaint, empresaMaxWidth.toInt())
             .setLineSpacing(0f, 0.9f).setIncludePad(false).build()
         currentCanvas.save()
         currentCanvas.translate(margin, yPosEmpresaAtual)
@@ -727,7 +738,6 @@ class SecondScreenActivity : AppCompatActivity() {
         }
 
         var invoiceY = cardTop + cardPadding
-        // Posiciona os valores da fatura/data alinhados à direita do retângulo
         val rightEdgeForValues = pageWidth - margin - cardPadding // Coordenada X para o alinhamento da direita dos valores
         val labelValueSpacing = 3f
 
@@ -915,7 +925,7 @@ class SecondScreenActivity : AppCompatActivity() {
                 .build()
 
             if (currentYPosition + instrucoesLayout.height > pageHeight - margin - 30f) {
-                // Handle new page logic here if necessary. For simplicity, assume it fits or is truncated.
+                // Handle new page logic aqui se necessário. Para simplificação, assume que cabe ou é truncado.
             }
 
             currentCanvas.save()
@@ -997,13 +1007,13 @@ class SecondScreenActivity : AppCompatActivity() {
         var currentYPosition = margin
 
         if (currentCanvas == null) {
-            Log.e("SecondScreen", "Canvas do PDF (email) é nulo. Não é possível desenhar.")
+            Log.e("SecondScreen", "Canvas do PDF (email) está nulo. Não é possível desenhar.")
             pdfDocument.close()
             showToast("Erro interno ao criar página do PDF para email.")
             return null
         }
 
-        // --- Styles ---
+        // --- Estilos ---
         val titlePaint = TextPaint().apply {
             typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
             textSize = 28f
@@ -1054,7 +1064,7 @@ class SecondScreenActivity : AppCompatActivity() {
             color = Color.DKGRAY
         }
 
-        // --- HEADER: Company Info and Logo ---
+        // --- CABEÇALHO: Informações da Empresa e Logotipo ---
         var yPosEmpresaAtual = currentYPosition
         var logoHeight = 0f
         var logoActualWidth = 0f
@@ -1078,12 +1088,12 @@ class SecondScreenActivity : AppCompatActivity() {
                         val aspectRatio = originalLogoBitmap.width.toFloat() / originalLogoBitmap.height.toFloat()
                         var targetWidth = actualLogoSizeForPdf
                         var targetHeight = targetWidth / aspectRatio
-                        val maxPermittedHeight = pageHeight * 0.15f // Smaller logo for email PDF
+                        val maxPermittedHeight = pageHeight * 0.15f // Menor logotipo para PDF de email
                         if (targetHeight > maxPermittedHeight) {
                             targetHeight = maxPermittedHeight
                             targetWidth = targetHeight * aspectRatio
                         }
-                        val maxPermittedWidth = contentWidth * 0.40f // Smaller logo for email PDF
+                        val maxPermittedWidth = contentWidth * 0.40f // Menor logotipo para PDF de email
                         if (targetWidth > maxPermittedWidth) {
                             targetWidth = maxPermittedWidth
                             targetHeight = targetWidth / aspectRatio
@@ -1112,7 +1122,7 @@ class SecondScreenActivity : AppCompatActivity() {
                     }
                 }
             } catch (e: Exception) {
-                Log.e("SecondScreen", "Erro ao carregar ou processar logo para email PDF: ${e.message}", e)
+                Log.e("SecondScreen", "Erro ao carregar ou processar logo para PDF de email: ${e.message}", e)
             }
         }
 
@@ -1151,7 +1161,7 @@ class SecondScreenActivity : AppCompatActivity() {
         }
         if (cepEmpresa.isNotEmpty()) {
             if (enderecoEmpresaConcatenado.isNotEmpty()) enderecoEmpresaConcatenado += " "
-            enderecoEmpresaConcatenado += "CEP: $cepEmpresa"
+            enderecoEmpresaConcatenado += cepEmpresa
         }
         if(enderecoEmpresaConcatenado.isNotEmpty()) empresaInfoList.add(enderecoEmpresaConcatenado)
 
@@ -1166,7 +1176,7 @@ class SecondScreenActivity : AppCompatActivity() {
         }
         currentYPosition = maxOf(yPosEmpresaAtual, currentYPosition + logoHeight) + 15f
 
-        // --- CLIENT INFORMATION & INVOICE DETAILS ---
+        // --- INFORMAÇÕES DO CLIENTE & DETALHES DA FATURA ---
         val cardTop = currentYPosition
         val cardPadding = 8f
         var clientInfoY = currentYPosition + cardPadding
@@ -1264,7 +1274,7 @@ class SecondScreenActivity : AppCompatActivity() {
 
         // Fatura Nº
         val numFaturaLabel = "Fatura Nº:"
-        val invoiceText = binding.invoiceNumberTextView.text?.toString() ?: "#${faturaId.toString().padStart(3, '0')}"
+        val invoiceText = binding.invoiceNumberTextView.text?. americantoString() ?: "#${faturaId.toString().padStart(3, '0')}"
 
         val invoiceTextX = rightEdgeForValues - textPaint.measureText(invoiceText) // X para o valor do número da fatura
         val numFaturaLabelX = invoiceTextX - labelPaint.measureText(numFaturaLabel) - labelValueSpacing // X para o label
@@ -1291,7 +1301,7 @@ class SecondScreenActivity : AppCompatActivity() {
         currentCanvas.drawRect(margin, cardTop, pageWidth - margin, maxBlockY + cardPadding, borderPaint) // Retângulo envolvendo as informações
         currentYPosition = maxBlockY + cardPadding + 15f // Atualiza a posição Y para desenhar abaixo do retângulo, com espaço extra
 
-        // Barcode - AGORA DESENHADO FORA DO RETÂNGULO E CENTRALIZADO
+        // Código de barras - AGORA DESENHADO FORA DO RETÂNGULO E CENTRALIZADO
         val barcodeText = if (faturaId != -1L) faturaId.toString() else invoiceText.replace("#", "") // Usando invoiceText
         val barcodeBitmap = generateBarcode(barcodeText, (contentWidth * 0.6f).toInt(), 50) // Ajusta largura do barcode para centralizar melhor
         barcodeBitmap?.let {
@@ -1301,12 +1311,12 @@ class SecondScreenActivity : AppCompatActivity() {
             it.recycle()
         }
 
-        // NO ARTICLES TABLE
-        // NO TOTALS
-        // NO NOTES
-        // NO PAYMENT INSTRUCTIONS
+        // SEM TABELA DE ARTIGOS
+        // SEM TOTAIS
+        // SEM NOTAS
+        // SEM INSTRUÇÕES DE PAGAMENTO
 
-        // --- FOOTER: Page Number ---
+        // --- RODAPÉ: Número da Página ---
         val pageNumText = "Pág 1"
         val pageNumTextWidth = pageNumPaint.measureText(pageNumText)
         val pageNumY = pageHeight - margin - 2f
@@ -1335,7 +1345,7 @@ class SecondScreenActivity : AppCompatActivity() {
             FileOutputStream(file).use { outputStream ->
                 pdfDocument.writeTo(outputStream)
             }
-            Log.d("SecondScreen", "PDF SIMPLIFICADO para email gerado com sucesso: ${file.absolutePath}")
+            Log.d("SecondScreen", "PDF SIMPLADO para email gerado com sucesso: ${file.absolutePath}")
             return file
         } catch (e: IOException) {
             Log.e("SecondScreen", "Erro de I/O ao salvar PDF simplificado para email: ${e.message}", e)
@@ -1350,7 +1360,6 @@ class SecondScreenActivity : AppCompatActivity() {
         }
     }
 
-
     private fun trySaveAndExit() {
         val podeSalvar = !nomeClienteSalvo.isNullOrEmpty() &&
                 nomeClienteSalvo != getString(R.string.adicionar_cliente_text) &&
@@ -1359,7 +1368,7 @@ class SecondScreenActivity : AppCompatActivity() {
         if (podeSalvar) {
             if (!isFaturaSaved) {
                 Log.d("SecondScreen", "trySaveAndExit: Tentando salvar fatura (faturaId: $faturaId, isFaturaSaved: $isFaturaSaved).")
-                saveFatura(finalizarActivityAposSalvar = false)
+                save Fatura(finalizarActivityAposSalvar = false)
             } else {
                 Log.d("SecondScreen", "trySaveAndExit: Fatura já foi salva (isFaturaSaved=true), apenas finalizando.")
                 super.finish()
@@ -1530,8 +1539,8 @@ class SecondScreenActivity : AppCompatActivity() {
         if (!savedNotasPadrao.isNullOrEmpty()) {
             val notasPadraoFromPrefs = savedNotasPadrao.split("\n").filter { it.isNotEmpty() }
             if (notasList.isEmpty()) {
-                notasList.addAll(notasPadraoFromPrefs)
-                Log.d("SecondScreen", "Notas padrão adicionadas à notasList (específicas da fatura): $notasPadraoFromPrefs")
+                notasList.addAll(notasPadrao
+                        Log.d("SecondScreen", "Notas padrão adicionadas à notasList (específicas da fatura): $notasPadrao")
             } else {
                 Log.d("SecondScreen", "Notas específicas da fatura já presentes, não sobrescrevendo com notas padrão.")
             }
@@ -1909,7 +1918,7 @@ class SecondScreenActivity : AppCompatActivity() {
     }
 
     private fun updateCurrentDate(dateTextView: TextView) {
-        val sdf = SimpleDateFormat("dd MMM yy", Locale("pt", "BR"))
+        val sdf = SimpleDateFormat("dd MMM yyyy", Locale("pt", "BR"))
         val currentDate = sdf.format(Date())
         dateTextView.text = currentDate
     }
@@ -1939,8 +1948,8 @@ class SecondScreenActivity : AppCompatActivity() {
             }
             Log.d("SecondScreen", "Artigos convertidos para string para salvar: $artigosString")
             val notasEspecificasString = notasList.joinToString("|").ifEmpty { "" }
-            Log.d("SecondScreen", "Notas específicas da fatura para salvar: $notasEspecificasString (tamanho: ${notasList.size})")
-            val values = ContentValues().apply {
+            Log.d("SecondScreen", "Notas específicas da fatura para salvar: $notasEspecificasString (tamanho: ${notasList.size()})")
+            val valores = ContentValues().apply {
                 put(FaturaContract.FaturaEntry.COLUMN_NAME_CLIENTE, nomeClienteSalvo)
                 put(FaturaContract.FaturaEntry.COLUMN_NAME_ARTIGOS, artigosString)
                 put(FaturaContract.FaturaEntry.COLUMN_NAME_SUBTOTAL, baseSubtotal)
@@ -1956,7 +1965,7 @@ class SecondScreenActivity : AppCompatActivity() {
             Log.d("SecondScreen", "ContentValues preparado para salvar/atualizar fatura: $values")
             if (faturaId != -1L) {
                 val rowsUpdated = db.update(
-                    FaturaContract.FaturaEntry.TABLE_NAME, values,
+                    FaturaContract.FaturaEntry.TABLE_NAME, valores,
                     "${BaseColumns._ID} = ?", arrayOf(faturaId.toString())
                 )
                 Log.d("SecondScreen", "Tentativa de atualização da fatura ID=$faturaId, linhas atualizadas: $rowsUpdated")
@@ -1973,7 +1982,7 @@ class SecondScreenActivity : AppCompatActivity() {
                     showToast("Erro ao atualizar a fatura.")
                 }
             } else {
-                val newRowId = db.insert(FaturaContract.FaturaEntry.TABLE_NAME, null, values)
+                val newRowId = db.insert(FaturaContract.FaturaEntry.TABLE_NAME, null, valores)
                 Log.d("SecondScreen", "Tentativa de inserção de nova fatura, ID retornado: $newRowId")
                 if (newRowId != -1L) {
                     faturaId = newRowId

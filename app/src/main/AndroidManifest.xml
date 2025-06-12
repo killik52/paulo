@@ -88,6 +88,9 @@
             android:name=".InstrucoesPagamentoActivity"
             android:exported="false" />
 
+        <activity android:name=".AdicionarClienteActivity"/>
+        <activity android:name=".CriarNovoClienteActivity"/>
+
         <activity
             android:name=".ResumoFinanceiroActivity"
             android:exported="false"
