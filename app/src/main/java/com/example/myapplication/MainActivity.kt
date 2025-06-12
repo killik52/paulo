@@ -213,6 +213,7 @@ class MainActivity : AppCompatActivity() {
         val spaceInPixels = (spaceInDp * resources.displayMetrics.density).toInt()
         binding.recyclerViewFaturas.addItemDecoration(VerticalSpaceItemDecoration(spaceInPixels))
 
+
         // ### OBSERVA O VIEWMODEL ###
         viewModel.faturas.observe(this) { faturas ->
             // Atualiza o adapter sempre que a lista no ViewModel mudar
@@ -232,7 +233,7 @@ class MainActivity : AppCompatActivity() {
                 val selectedOption = menuOptionsAdapter.getItem(position).toString()
                 when (selectedOption) {
                     "Fatura" -> toggleGridView()
-                    "Cliente" -> {
+                    "com/example/myapplication/database/Cliente" -> {
                         startActivity(Intent(this, ListarClientesActivity::class.java))
                         toggleGridView()
                     }

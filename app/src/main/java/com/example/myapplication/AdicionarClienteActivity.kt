@@ -51,13 +51,6 @@ class AdicionarClienteActivity : AppCompatActivity() {
         binding.buttonBloquearCliente.setOnClickListener {
             saveCliente()
         }
-
-        // Nova funcionalidade: Abrir CriarNovoClienteActivity ao clicar em textViewNovocliente
-        binding.textViewNovocliente.setOnClickListener {
-            Log.d("AdicionarCliente", "Clicou em textViewNovocliente")
-            val intent = Intent(this, CriarNovoClienteActivity::class.java)
-            startActivityForResult(intent, 123) // Usando requestCode 123, consistente com ADICIONAR_CLIENTE_REQUEST_CODE
-        }
     }
 
     private fun loadClienteData(id: Long) {
@@ -293,7 +286,7 @@ class AdicionarClienteActivity : AppCompatActivity() {
     private fun showDeleteClientDialog() {
         AlertDialog.Builder(this)
             .setTitle("Excluir Cliente")
-            .setMessage("Tem certeza que deseja excluir este cliente? Esta ação não pode be undone.")
+            .setMessage("Tem certeza que deseja excluir este cliente? Esta ação não pode ser desfeita.")
             .setPositiveButton("Excluir") { _, _ ->
                 deleteClient()
             }
