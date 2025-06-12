@@ -104,7 +104,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/grayBarView" />
 
-            <!-- Primeiro ponto azul -->
             <View
                 android:id="@+id/dot1"
                 android:layout_width="8dp"
@@ -120,7 +119,6 @@
                 app:layout_constraintTop_toTopOf="@id/grayBarView"
                 app:layout_constraintVertical_bias="0.903" />
 
-            <!-- Segundo ponto azul -->
             <View
                 android:id="@+id/dot2"
                 android:layout_width="8dp"
@@ -135,7 +133,6 @@
                 app:layout_constraintTop_toTopOf="@id/grayBarView"
                 app:layout_constraintVertical_bias="0.903" />
 
-            <!-- Terceiro ponto azul -->
             <View
                 android:id="@+id/dot3"
                 android:layout_width="8dp"
@@ -498,6 +495,8 @@
                     android:text="Adicionar Nota"
                     android:textColor="#0000FF"
                     android:textSize="16sp"
+                    android:clickable="true"
+                    android:focusable="true"
                     app:layout_constraintStart_toEndOf="@+id/adicionarNotaIcon"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -560,7 +559,6 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- Caixa branca com sombra e ícones (whiteBox) -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/whiteBox"
                 android:layout_width="0dp"
@@ -576,33 +574,45 @@
                 app:layout_constraintTop_toBottomOf="@+id/adicionarFotoContainer"
                 app:layout_constraintBottom_toBottomOf="parent">
 
-                <!-- Ícone de visualizar -->
-
-                <!-- Ícone de enviar -->
-
                 <ImageView
                     android:id="@+id/viewIcon"
-                    android:layout_width="141dp"
-                    android:layout_height="71dp"
-                    android:layout_marginStart="40dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:contentDescription="pdf"
                     android:src="@drawable/pdf"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintEnd_toStartOf="@+id/emailButton"
+                    android:padding="8dp"/>
+
+                <ImageButton
+                    android:id="@+id/emailButton"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/notas"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Email"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.545" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/viewIcon"
+                    app:layout_constraintEnd_toStartOf="@+id/sendIcon"
+                    android:padding="8dp"/>
 
                 <ImageView
                     android:id="@+id/sendIcon"
-                    android:layout_width="106dp"
-                    android:layout_height="73dp"
-                    android:layout_marginStart="40dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:contentDescription="Enviar"
                     android:src="@drawable/enviar"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/viewIcon"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/emailButton"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:padding="8dp"/>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

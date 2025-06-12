@@ -283,7 +283,7 @@ class SecondScreenActivity : AppCompatActivity() {
                     }
                 } else {
                     Log.d("SecondScreen", "Nenhum cliente selecionado. Abrindo CriarNovoClienteActivity para adicionar um novo.")
-                    val intentParaAdicionar = Intent(this, CriarNovoClienteActivity::class.java) // <-- MUDANÇA AQUI
+                    val intentParaAdicionar = Intent(this, CriarNovoClienteActivity::class.java)
                     startActivityForResult(intentParaAdicionar, ADICIONAR_CLIENTE_REQUEST_CODE)
                 }
             } catch (e: Exception) {
@@ -416,6 +416,25 @@ class SecondScreenActivity : AppCompatActivity() {
                 showToast("Erro ao compartilhar PDF: ${e.message}")
             }
         }
+
+        // --- CÓDIGO ATUALIZADO PARA O emailButton ---
+        binding.emailButton.setOnClickListener {
+            showToast("Gerando PDF da nota de serviço...") // Feedback imediato
+            try {
+                val pdfFile = generatePDF() // Tenta gerar o PDF
+                if (pdfFile != null) {
+                    showToast("PDF gerado! Abrindo...") // Feedback de sucesso
+                    viewPDF(pdfFile) // Chama a função para visualizar o PDF diretamente
+                } else {
+                    Log.w("SecondScreen", "generatePDF retornou nulo. PDF não foi gerado.")
+                    showToast("Não foi possível gerar o PDF. Verifique os dados e o Logcat.") // Feedback de falha
+                }
+            } catch (e: Exception) {
+                Log.e("SecondScreen", "Erro ao tentar gerar ou exibir PDF (emailButton): ${e.message}", e)
+                showToast("Erro crítico ao gerar ou exibir PDF: ${e.message}") // Feedback de erro crítico
+            }
+        }
+        // --- FIM DO CÓDIGO ATUALIZADO ---
     }
 
     private fun generateBarcode(text: String, width: Int = 300, height: Int = 60): Bitmap? {
@@ -449,10 +468,11 @@ class SecondScreenActivity : AppCompatActivity() {
             showToast("Selecione um cliente antes de gerar o PDF.")
             return null
         }
-        if (artigosList.isEmpty()) {
-            showToast("Adicione pelo menos um artigo para gerar o PDF.")
-            return null
-        }
+        // Comentado para permitir PDF reduzido mesmo sem artigos no momento da geração
+        // if (artigosList.isEmpty()) {
+        //     showToast("Adicione pelo menos um artigo para gerar o PDF.")
+        //     return null
+        // }
 
         val pageWidth = 595f
         val pageHeight = 842f
@@ -460,8 +480,8 @@ class SecondScreenActivity : AppCompatActivity() {
         val contentWidth = pageWidth - 2 * margin
 
         val pdfDocument = PdfDocument()
-        val pageInfo = PdfDocument.PageInfo.Builder(pageWidth.toInt(), pageHeight.toInt(), 1).create()
-        val currentPage = pdfDocument.startPage(pageInfo)
+        var pageInfo = PdfDocument.PageInfo.Builder(pageWidth.toInt(), pageHeight.toInt(), 1).create()
+        var currentPage = pdfDocument.startPage(pageInfo)
         val currentCanvas: Canvas? = currentPage.canvas
         var currentYPosition = margin
 
@@ -540,11 +560,24 @@ class SecondScreenActivity : AppCompatActivity() {
             textSize = 8f
             color = Color.DKGRAY
         }
+        val instrucoesTitlePaint = TextPaint().apply {
+            typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+            textSize = 12f
+            color = android.graphics.Color.BLACK
+        }
+        val instrucoesTextPdfPaint = TextPaint().apply {
+            typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL)
+            textSize = 7f
+            color = Color.parseColor("#444444")
+        }
 
+
+        // --- Fatura Title ---
         val yPosFaturaTitleBaseline = currentYPosition + titlePaint.textSize
         currentCanvas.drawText("Fatura", margin, yPosFaturaTitleBaseline, titlePaint)
         currentYPosition = yPosFaturaTitleBaseline + 15f
 
+        // --- Empresa Info & Logo ---
         val headerBlockTopY = currentYPosition
         var logoHeight = 0f
         var logoActualWidth = 0f
@@ -660,6 +693,7 @@ class SecondScreenActivity : AppCompatActivity() {
         val yPosAfterEmpresaInfo = yPosEmpresaAtual
         currentYPosition = maxOf(yPosAfterEmpresaInfo, yPosAfterLogo) + 15f
 
+        // --- Cliente & Fatura Info Card ---
         val cardTop = currentYPosition
         val cardPadding = 8f
         var clienteY = cardTop + cardPadding
@@ -747,172 +781,13 @@ class SecondScreenActivity : AppCompatActivity() {
         currentCanvas.drawRoundRect(margin, cardTop, pageWidth - margin, cardBottom, 5f, 5f, borderPaint)
         currentYPosition = cardBottom + 10f
 
-        val tableHeaderPadding = 3f
-        val tableHeaderHeight = textPaint.textSize + 2 * tableHeaderPadding + 4f
-        val colNomeWidth = contentWidth * 0.42f
-        val colQtdWidth = contentWidth * 0.13f
-        val colPrecoUnitWidth = contentWidth * 0.20f
+        // --- REMOVIDO PARA PDF RESUMIDO: Seções de Artigos, Totais, Notas, Instruções de Pagamento ---
+        // As seções abaixo foram comentadas/removidas para gerar um PDF com informações reduzidas.
+        // Se precisar da versão completa, descomente essas seções ou crie uma função generateFullPDF().
 
-        currentCanvas.drawRoundRect(margin, currentYPosition, pageWidth - margin, currentYPosition + tableHeaderHeight, 5f, 5f, headerBackgroundPaint)
-        var currentXHeader = margin
-        val textYHeaderOffset = currentYPosition + tableHeaderPadding + textPaint.textSize / 2 + 2f
+        // currentYPosition += saldoDevedorPaint.textSize + 10f; // Manter um espaçamento caso as seções acima tivessem conteúdo
 
-        currentCanvas.drawText("Nome", currentXHeader + tableHeaderPadding, textYHeaderOffset, textPaint)
-        currentXHeader += colNomeWidth
-        currentCanvas.drawText("Qtd", currentXHeader + tableHeaderPadding, textYHeaderOffset, textPaint)
-        currentXHeader += colQtdWidth
-        currentCanvas.drawText("Unit.", currentXHeader + tableHeaderPadding, textYHeaderOffset, textPaint)
-        currentXHeader += colPrecoUnitWidth
-        currentCanvas.drawText("Total", currentXHeader + tableHeaderPadding, textYHeaderOffset, textPaint)
-        currentYPosition += tableHeaderHeight + 3f
-
-        artigosList.forEach { artigo ->
-            val artigoNome = artigo.nome ?: "N/A"
-            val nomeLayout = StaticLayout.Builder.obtain(artigoNome, 0, artigoNome.length, textPaint, colNomeWidth.toInt() - (2 * tableHeaderPadding).toInt())
-                .setLineSpacing(0f,0.9f).setIncludePad(false).build()
-            val artigoLineHeight = nomeLayout.height.toFloat() + 5f
-
-            val quantidadeText = artigo.quantidade.toString()
-            val precoUnitario = if (artigo.quantidade > 0) artigo.preco / artigo.quantidade else 0.0
-            val precoUnitarioText = decimalFormat.format(precoUnitario)
-            val totalArtigoText = decimalFormat.format(artigo.preco)
-
-            var currentX = margin
-            val textYItemOffset = currentYPosition + nomeLayout.getLineBaseline(0) + 1f
-
-            currentCanvas.save()
-            currentCanvas.translate(currentX + tableHeaderPadding, currentYPosition)
-            nomeLayout.draw(currentCanvas)
-            currentCanvas.restore()
-            currentX += colNomeWidth
-
-            currentCanvas.drawText(quantidadeText, currentX + tableHeaderPadding, textYItemOffset, textPaint)
-            currentX += colQtdWidth
-            currentCanvas.drawText(precoUnitarioText, currentX + tableHeaderPadding, textYItemOffset, textPaint)
-            currentX += colPrecoUnitWidth
-            currentCanvas.drawText(totalArtigoText, currentX + tableHeaderPadding, textYItemOffset, textPaint)
-
-            currentYPosition += artigoLineHeight
-            currentCanvas.drawLine(margin, currentYPosition - 2f, pageWidth - margin, currentYPosition - 2f, linePaint)
-        }
-        currentYPosition += 12f
-
-        val totalXPosition = pageWidth - margin - 140f
-        val valueAlignX = pageWidth - margin
-        val itemSpacingTotals = textPaint.textSize + 6f
-
-        currentCanvas.drawText("Subtotal:", totalXPosition, currentYPosition + textPaint.textSize*0.3f, textPaint)
-        val subtotalText = decimalFormat.format(artigosList.sumOf { it.preco })
-        currentCanvas.drawText(subtotalText, valueAlignX - textPaint.measureText(subtotalText), currentYPosition + textPaint.textSize*0.3f, textPaint)
-        currentYPosition += itemSpacingTotals
-
-        currentCanvas.drawText("Desconto:", totalXPosition, currentYPosition + textPaint.textSize*0.3f, textPaint)
-        val descontoText = decimalFormat.format(descontoValor)
-        currentCanvas.drawText(descontoText, valueAlignX - textPaint.measureText(descontoText), currentYPosition + textPaint.textSize*0.3f, textPaint)
-        currentYPosition += itemSpacingTotals
-
-        currentCanvas.drawText("Tx. Entrega:", totalXPosition, currentYPosition + textPaint.textSize*0.3f, textPaint)
-        val taxaText = decimalFormat.format(taxaEntrega)
-        currentCanvas.drawText(taxaText, valueAlignX - textPaint.measureText(taxaText), currentYPosition + textPaint.textSize*0.3f, textPaint)
-        currentYPosition += itemSpacingTotals
-        currentYPosition += 4f
-
-        currentCanvas.drawText("Saldo Devedor:", totalXPosition, currentYPosition + saldoDevedorPaint.textSize*0.3f, saldoDevedorPaint)
-        val saldoText = decimalFormat.format(artigosList.sumOf { it.preco } - descontoValor + taxaEntrega)
-        currentCanvas.drawText(saldoText, valueAlignX - saldoDevedorPaint.measureText(saldoText), currentYPosition + saldoDevedorPaint.textSize*0.3f, saldoDevedorPaint)
-        currentYPosition += saldoDevedorPaint.textSize + 10f
-
-        val notasPadraoString = notasPadraoPreferences.getString("notas", "") ?: ""
-        val notasPadraoList = if (notasPadraoString.isNotEmpty()) notasPadraoString.split("\n").filter { it.isNotBlank() } else emptyList()
-        val todasAsNotas = notasList.toMutableList()
-        notasPadraoList.forEach { notaPadrao ->
-            if (!notasList.contains(notaPadrao)) {
-                todasAsNotas.add(notaPadrao)
-            }
-        }
-
-        if (todasAsNotas.any { it.isNotBlank() }) {
-            val notasTitleHeight = headerPaint.textSize + 4f
-            currentCanvas.drawText("Notas:", margin, currentYPosition + headerPaint.textSize*0.3f, headerPaint)
-            currentYPosition += notasTitleHeight
-            todasAsNotas.forEach { nota ->
-                if (nota.isNotBlank()) {
-                    val notaLayout = StaticLayout.Builder.obtain(nota, 0, nota.length, notasTextPaint, contentWidth.toInt())
-                        .setAlignment(Layout.Alignment.ALIGN_NORMAL)
-                        .setLineSpacing(0f, 0.9f)
-                        .setIncludePad(false)
-                        .build()
-                    val notaHeightIndividual = notaLayout.height + 3f
-                    if (currentYPosition + notaHeightIndividual > pageHeight - margin - 30f) {
-                        return@forEach
-                    }
-                    currentCanvas.save()
-                    currentCanvas.translate(margin, currentYPosition)
-                    notaLayout.draw(currentCanvas)
-                    currentCanvas.restore()
-                    currentYPosition += notaHeightIndividual
-                }
-            }
-        }
-
-        val instrucoesPagamentoPrefs = getSharedPreferences("InstrucoesPagamentoPrefs", Context.MODE_PRIVATE)
-        val pix = instrucoesPagamentoPrefs.getString("instrucoes_pix", "")
-        val banco = instrucoesPagamentoPrefs.getString("instrucoes_banco", "")
-        val agencia = instrucoesPagamentoPrefs.getString("instrucoes_agencia", "")
-        val conta = instrucoesPagamentoPrefs.getString("instrucoes_conta", "")
-        val outras = instrucoesPagamentoPrefs.getString("instrucoes_outras", "")
-
-        val builder = StringBuilder()
-        if (!pix.isNullOrEmpty()) {
-            builder.append("PIX: ").append(pix).append("\n\n")
-        }
-        if (!banco.isNullOrEmpty() || !agencia.isNullOrEmpty() || !conta.isNullOrEmpty()) {
-            builder.append("Dados Bancários:\n")
-            if (!banco.isNullOrEmpty()) builder.append("Banco: ").append(banco).append("\n")
-            if (!agencia.isNullOrEmpty()) builder.append("Agência: ").append(agencia).append("\n")
-            if (!conta.isNullOrEmpty()) builder.append("Conta: ").append(conta).append("\n\n")
-        }
-        if (!outras.isNullOrEmpty()) {
-            builder.append("Outras Informações:\n").append(outras)
-        }
-
-        val instrucoesPagamentoTexto = builder.toString().trim()
-
-        if (instrucoesPagamentoTexto.isNotEmpty()) {
-            currentYPosition += 15f
-            val instrucoesTitlePaint = TextPaint().apply {
-                typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
-                textSize = 12f
-                color = android.graphics.Color.BLACK
-            }
-            val instrucoesTextPdfPaint = TextPaint().apply {
-                typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL)
-                textSize = 7f
-                color = Color.parseColor("#444444")
-            }
-            val titleInstrucoes = "Instruções de Pagamento"
-            val titleInstrucoesHeight = instrucoesTitlePaint.textSize + 8f
-            currentCanvas.drawText(titleInstrucoes, margin, currentYPosition + instrucoesTitlePaint.textSize * 0.3f, instrucoesTitlePaint)
-            currentYPosition += titleInstrucoesHeight
-
-            val instrucoesLayout = StaticLayout.Builder.obtain(
-                instrucoesPagamentoTexto, 0, instrucoesPagamentoTexto.length, instrucoesTextPdfPaint, contentWidth.toInt()
-            )
-                .setAlignment(Layout.Alignment.ALIGN_NORMAL)
-                .setLineSpacing(2f, 1.0f)
-                .setIncludePad(false)
-                .build()
-
-            if (currentYPosition + instrucoesLayout.height > pageHeight - margin - 30f) {
-            }
-
-            currentCanvas.save()
-            currentCanvas.translate(margin, currentYPosition)
-            instrucoesLayout.draw(currentCanvas)
-            currentCanvas.restore()
-            currentYPosition += instrucoesLayout.height + 5f
-        }
-
+        // --- Barcode and Page Number ---
         val barcodeText = if (faturaId != -1L) faturaId.toString() else (binding.invoiceNumberTextView.text?.toString()?.replace("#", "") ?: "NO_ID")
         val barcodeBitmap = generateBarcode(barcodeText, 160, 35)
         val barcodeX = margin
@@ -929,7 +804,7 @@ class SecondScreenActivity : AppCompatActivity() {
 
         pdfDocument.finishPage(currentPage)
 
-        val fileName = "Fatura_${binding.invoiceNumberTextView.text?.toString()?.replace("#","") ?: faturaId}_${System.currentTimeMillis()}.pdf"
+        val fileName = "Fatura_Resumida_${binding.invoiceNumberTextView.text?.toString()?.replace("#","") ?: faturaId}_${System.currentTimeMillis()}.pdf"
 
         val storageDir = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
         if (storageDir == null) {
@@ -1619,6 +1494,7 @@ class SecondScreenActivity : AppCompatActivity() {
     }
 
     private fun updateFaturaItensAssociations(db: SQLiteDatabase, faturaId: Long) {
+        // Remove existing associations for this fatura
         db.delete(
             FaturaContract.FaturaItemEntry.TABLE_NAME,
             "${FaturaContract.FaturaItemEntry.COLUMN_NAME_FATURA_ID} = ?",
