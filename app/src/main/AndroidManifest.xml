@@ -44,7 +44,7 @@
             android:name=".CriarNovoClienteActivity"
             android:exported="false" />
         <activity
-            android:name=".AdicionarClienteActivity"
+            android:name=".ClienteRecentesActivity"
             android:exported="false"
             android:theme="@style/Theme.AdicionarCliente" />
         <activity
