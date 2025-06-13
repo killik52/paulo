@@ -243,8 +243,8 @@ class SecondScreenActivity : AppCompatActivity() {
             try {
                 Log.d("SecondScreen", "Clicou em topAdicionarClienteTextViewSecondScreen. nomeClienteSalvo: '$nomeClienteSalvo', clienteIdSalvo: $clienteIdSalvo")
                 if (!nomeClienteSalvo.isNullOrEmpty() && nomeClienteSalvo != getString(R.string.adicionar_cliente_text) && clienteIdSalvo > 0L) {
-                    Log.d("SecondScreen", "Abrindo CriarNovoClienteActivity para editar cliente ID: $clienteIdSalvo")
-                    val intentParaEditarCliente = Intent(this, CriarNovoClienteActivity::class.java)
+                    Log.d("SecondScreen", "Abrindo AdicionarClienteActivity para editar cliente ID: $clienteIdSalvo")
+                    val intentParaEditarCliente = Intent(this, AdicionarClienteActivity::class.java)
                     val db = dbHelper?.readableDatabase
                     if (db == null) {
                         showToast("Erro ao acessar o banco de dados.")
@@ -274,17 +274,17 @@ class SecondScreenActivity : AppCompatActivity() {
                             startActivityForResult(intentParaEditarCliente, ADICIONAR_CLIENTE_REQUEST_CODE)
                         } else {
                             Log.w("SecondScreen", "Cliente com ID $clienteIdSalvo não encontrado no banco. Abrindo CriarNovoClienteActivity.")
-                            val intentParaAdicionar = Intent(this, CriarNovoClienteActivity::class.java)
+                            val intentParaAdicionar = Intent(this,  AdicionarClienteActivity::class.java)
                             startActivityForResult(intentParaAdicionar, ADICIONAR_CLIENTE_REQUEST_CODE)
                         }
                     } ?: run {
                         showToast("Erro ao consultar dados do cliente.")
-                        val intentParaAdicionar = Intent(this, CriarNovoClienteActivity::class.java)
+                        val intentParaAdicionar = Intent(this,  AdicionarClienteActivity::class.java)
                         startActivityForResult(intentParaAdicionar, ADICIONAR_CLIENTE_REQUEST_CODE)
                     }
                 } else {
                     Log.d("SecondScreen", "Nenhum cliente selecionado. Abrindo CriarNovoClienteActivity para adicionar um novo.")
-                    val intentParaAdicionar = Intent(this, CriarNovoClienteActivity::class.java)
+                    val intentParaAdicionar = Intent(this,  AdicionarClienteActivity::class.java)
                     startActivityForResult(intentParaAdicionar, ADICIONAR_CLIENTE_REQUEST_CODE)
                 }
             } catch (e: Exception) {
