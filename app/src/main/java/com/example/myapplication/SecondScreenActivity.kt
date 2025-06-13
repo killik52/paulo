@@ -240,54 +240,12 @@ class SecondScreenActivity : AppCompatActivity() {
 
         binding.topAdicionarClienteTextViewSecondScreen.setOnClickListener {
             try {
-                Log.d("SecondScreen", "Clicou em topAdicionarClienteTextViewSecondScreen. nomeClienteSalvo: '$nomeClienteSalvo', clienteIdSalvo: $clienteIdSalvo")
-                if (!nomeClienteSalvo.isNullOrEmpty() && nomeClienteSalvo != getString(R.string.adicionar_cliente_text) && clienteIdSalvo > 0L) {
-                    Log.d("SecondScreen", "Abrindo AdicionarClienteActivity para editar cliente ID: $clienteIdSalvo")
-                    val intentParaEditarCliente = Intent(this, ClienteRecentesActivity::class.java)
-                    val db = dbHelper?.readableDatabase
-                    if (db == null) {
-                        showToast("Erro ao acessar o banco de dados.")
-                        return@setOnClickListener
-                    }
-                    val cursor: Cursor? = db.query(
-                        ClienteContract.ClienteEntry.TABLE_NAME, null,
-                        "${BaseColumns._ID} = ?", arrayOf(clienteIdSalvo.toString()),
-                        null, null, null
-                    )
-                    cursor?.use { c ->
-                        if (c.moveToFirst()) {
-                            intentParaEditarCliente.putExtra("cliente_id", c.getLong(c.getColumnIndexOrThrow(BaseColumns._ID)))
-                            intentParaEditarCliente.putExtra("nome_cliente", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_NOME)))
-                            intentParaEditarCliente.putExtra("email", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_EMAIL)))
-                            intentParaEditarCliente.putExtra("telefone", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_TELEFONE)))
-                            intentParaEditarCliente.putExtra("informacoes_adicionais", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_INFORMACOES_ADICIONAIS)))
-                            intentParaEditarCliente.putExtra("cpf", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_CPF)))
-                            intentParaEditarCliente.putExtra("cnpj", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_CNPJ)))
-                            intentParaEditarCliente.putExtra("logradouro", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_LOGRADOURO)))
-                            intentParaEditarCliente.putExtra("numero", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_NUMERO)))
-                            intentParaEditarCliente.putExtra("complemento", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_COMPLEMENTO)))
-                            intentParaEditarCliente.putExtra("bairro", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_BAIRRO)))
-                            intentParaEditarCliente.putExtra("municipio", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_MUNICIPIO)))
-                            intentParaEditarCliente.putExtra("uf", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_UF)))
-                            intentParaEditarCliente.putExtra("cep", c.getString(c.getColumnIndexOrThrow(ClienteContract.ClienteEntry.COLUMN_NAME_CEP)))
-                            startActivityForResult(intentParaEditarCliente, ADICIONAR_CLIENTE_REQUEST_CODE)
-                        } else {
-                            Log.w("SecondScreen", "Cliente com ID $clienteIdSalvo não encontrado no banco. Abrindo CriarNovoClienteActivity.")
-                            val intentParaAdicionar = Intent(this,  ClienteRecentesActivity::class.java)
-                            startActivityForResult(intentParaAdicionar, ADICIONAR_CLIENTE_REQUEST_CODE)
-                        }
-                    } ?: run {
-                        showToast("Erro ao consultar dados do cliente.")
-                        val intentParaAdicionar = Intent(this,  ClienteRecentesActivity::class.java)
-                        startActivityForResult(intentParaAdicionar, ADICIONAR_CLIENTE_REQUEST_CODE)
-                    }
-                } else {
-                    Log.d("SecondScreen", "Nenhum cliente selecionado. Abrindo CriarNovoClienteActivity para adicionar um novo.")
-                    val intentParaAdicionar = Intent(this,  ClienteRecentesActivity::class.java)
-                    startActivityForResult(intentParaAdicionar, ADICIONAR_CLIENTE_REQUEST_CODE)
-                }
+                Log.d("SecondScreen", "Clicou em topAdicionarClienteTextViewSecondScreen. Abrindo ClienteRecentesActivity para adicionar/selecionar cliente.")
+                // Always open ClienteRecentesActivity to add a new client or select an existing one.
+                val intentParaAdicionarOuSelecionar = Intent(this, ClienteRecentesActivity::class.java)
+                startActivityForResult(intentParaAdicionarOuSelecionar, ADICIONAR_CLIENTE_REQUEST_CODE)
             } catch (e: Exception) {
-                Log.e("SecondScreen", "Erro no clique do nome do cliente: ${e.message}", e)
+                Log.e("SecondScreen", "Erro no clique do nome do cliente (abrir Clientes Recentes): ${e.message}", e)
                 showToast("Erro ao processar clique no cliente: ${e.message}")
             }
         }
@@ -437,7 +395,7 @@ class SecondScreenActivity : AppCompatActivity() {
                 Log.w("SecondScreen", "Texto para código de barras está vazio.")
                 return null
             }
-            val bitMatrix: BitMatrix = MultiFormatWriter().encode( // Corrigido aqui
+            val bitMatrix: BitMatrix = MultiFormatWriter().encode(
                 text,
                 BarcodeFormat.CODE_128,
                 width,
@@ -706,8 +664,8 @@ class SecondScreenActivity : AppCompatActivity() {
                 var enderecoCompleto = ""
                 if (logradouro?.isNotEmpty() == true) enderecoCompleto += "$logradouro"
                 if (numero?.isNotEmpty() == true) { if (enderecoCompleto.isNotEmpty()) enderecoCompleto += ", "; enderecoCompleto += numero }
-                if (bairro?.isNotEmpty() == true) { if (enderecoCompleto.isNotEmpty()) enderecoCompleto += ", "; enderecoCompleto += bairro }
-                if (municipio?.isNotEmpty() == true) { if (enderecoCompleto.isNotEmpty()) enderecoCompleto += " - "; enderecoCompleto += municipio }
+                if (bairro?.isNotEmpty() == true) { if (enderecoCompleto.isNotEmpty()) enderecoCompleto += " - "; enderecoCompleto += bairro }
+                if (municipio?.isNotEmpty() == true) { if (enderecoCompleto.isNotEmpty()) enderecoCompleto += ", "; enderecoCompleto += municipio }
                 if (uf?.isNotEmpty() == true) { if (enderecoCompleto.isNotEmpty()) enderecoCompleto += "/$uf" else enderecoCompleto += uf }
                 if (cep?.isNotEmpty() == true) { if (enderecoCompleto.isNotEmpty()) enderecoCompleto += " "; enderecoCompleto += "CEP: $cep" }
                 if (enderecoCompleto.isNotEmpty()) clienteInfoList.add(enderecoCompleto.trimStart(',', ' ') to clienteInfoPaint)
@@ -1534,8 +1492,6 @@ class SecondScreenActivity : AppCompatActivity() {
             } else {
                 Log.d("SecondScreen", "Notas específicas da fatura já presentes, não sobrescrevendo com notas padrão.")
             }
-        } else {
-            Log.d("SecondScreen", "Nenhuma nota padrão encontrada no SharedPreferences (NotasPrefs).")
         }
         if (::notaAdapter.isInitialized) {
             notaAdapter.notifyDataSetChanged()
