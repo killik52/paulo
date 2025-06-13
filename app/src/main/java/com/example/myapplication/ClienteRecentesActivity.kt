@@ -12,7 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.databinding.ActivityClienteBinding
 
-class AdicionarClienteActivity : AppCompatActivity() {
+class ClienteRecentesActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityClienteBinding
     private var dbHelper: ClienteDbHelper? = null
